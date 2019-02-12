@@ -1,0 +1,515 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Phiếu In Y Khoa Net</title>
+    <style>
+        @@media print {
+            input[type=button] {
+                display: none;
+            }
+
+            #divLoading {
+                display: none;
+            }
+        }
+
+        body {
+            font-family: 'Times New Roman';
+            font-size: 12pt;
+        }
+
+        table {
+            width: 100%;
+            height: auto;
+            margin: 0 0 0 0;
+        }
+
+        h5, h1, h2, h3, h4, h6 {
+            margin-bottom: 2px;
+            font-size: 13pt;
+            margin-top: 2px;
+        }
+
+        . {
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+            .divkhonghinh {
+                width: 100%;
+                height: 100%;
+            }
+
+            .divThongTincss {
+                /*width: 50%;
+            height: 20cm;
+            float: left;*/
+                margin: 0;
+            }
+
+
+            .divHinhcss {
+                width: 45%;
+                height: 20cm;
+                float: right;
+                display: inline-block;
+                margin: 0;
+            }
+
+            .grid-container {
+                display: grid;
+                grid-template-columns: auto auto;
+                grid-gap: 10px;
+                padding: 10px;
+            }
+
+                .grid-container > div {
+                    text-align: center;
+                    padding: 20px 0;
+                    font-size: 30px;
+                }
+
+            .item1 {
+                grid-area: 2 / 1;
+            }
+
+            .wordwrap {
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+                hyphens: auto;
+            }
+            /*Vinh*/
+            .footerChuKy {
+                position: fixed;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+           
+            textarea {
+                display: block;
+                border: none;
+                overflow: hidden;
+                resize: none;
+                height: auto;
+            }
+    </style>
+</head>
+<body style="background-color:white" id="body">
+    <form id="form1" runat="server">
+        <div id="divThongTin" class="divThongTincss">
+            <table style="width:100%;height:auto">
+                <tr>
+                    <td><img src="~/LogoPKTamPhuc.jpg" style="height:70px; width:70px" /></td>
+                    <td style="text-align: left;width:60%;" rowspan="3">
+                        <span id="CQChuQuan" class=""></span><br />
+                        <span id="TenBV" class=""></span><br />
+                        <span id="DiaChiBV" style="font-weight:bold"></span><br />
+                        <b>ĐT: </b><span id="DienThoaiBV" style="font-weight:bold;"></span>
+                    </td>
+                    <td style="text-align: center;width:20%"></td>
+                    <td style="text-align: center;width:20%">
+                        <svg id="barcode"></svg>
+                    </td>
+                </tr>
+            </table>
+            <div style="text-align: center;font-weight:bold;font-size:30px;color:red;">
+                PHIẾU <span name="TenKhoa"></span>
+            </div>
+            <table style="margin: 10px 0 0 0;" id="bordertable">
+                <tr>
+                    <td style="width:12pt"></td>
+                    <td>Thời gian chỉ định: <span id="NgayChiDinh"></span></td>
+                    <td>Thời gian có kết quả: <span id="NgayKQ"></span></td>
+                </tr>
+                <tr>
+                    <td style="width:10px"></td>
+                    <td>Họ tên: <span id="HoTen" class="" style="font-weight:bold;"></span></td>
+                    <td>Giới tính: <span id="GioiTinh" class="" style="font-weight:bold;"></span> &nbsp &nbsp &nbsp</&nbsp>Năm sinh: <span id="NamSinh" class=""></span></td>
+                    @* <td>Sổ BHYT: <span id="SoBHYT" class=""></span></td>*@
+                </tr>
+                @*<tr>
+                        <td style="width:10px"></td>
+                        <td>Giới tính: <span id="GioiTinh" class="" style="font-weight:bold;"></span></td>
+                        <td>Năm sinh: <span id="NamSinh" class=""></span></td>
+                    </tr>*@
+                <tr>
+                    <td style="width:10px"></td>
+                    <td colspan="2">Địa chỉ: <span id="DiaChi" class=""></span></td>
+                </tr>
+                <tr>
+                    <td style="width:10px"></td>
+                    <td>Bs chỉ định: <span id="BacSiChiDinh" class="" style="font-weight:bold;"></span></td>
+                    <td>Sổ BHYT: <span id="SoBHYT" class=""></span></td>
+                    @*<td>Buồng: <span id="Phong" style="font-weight:bold;"></span></td>*@
+
+                </tr>
+                <tr>
+                    <td style="width:10px"></td>
+                    <td>Nơi chỉ định: <span id="NoiChiDinh" style="font-weight:bold;"></span></td>
+                    @*    <td>Giường: <span id="Giuong" style="font-weight:bold;"></span></td>*@
+                </tr>
+                <tr>
+                    <td style="width:10px"></td>
+                    <td colspan="2" @*style="width:100px"*@>DV chỉ định: <span id="TenDV" class="" style="font-weight:bold;"></span></td>
+                </tr>
+                <tr>
+                    <td style="width:10px"></td>
+                    <td colspan="2">Chẩn đoán: <span id="ChanDoan" class="" style="font-weight:bold;"></span></td>
+                </tr>
+                @*<tr>
+                        <td style="width:10px"></td>
+                        <td colspan="2">Thuốc:  <span id="txtThuoc" class=""></span></td>
+                    </tr>
+                    <tr>
+                        <td style="width:10px"></td>
+                        <td colspan="2">Phim:  <span id="txtVTYT" class=""></span></td>
+                    </tr>*@
+            </table>
+            <br />
+            <div style="text-align:left; margin-left:25px;">
+                <span style="font-weight:bold;color:red; ">KẾT QUẢ:</span><br />
+
+                <table>
+                    <tr>
+                        <td style="width:10px"></td>
+                        <td>
+                            <div id="divMoTa" class="wordwrap" style="display:table-caption;font-size:25px;">
+
+                            </div>
+                            <div id="divMoTaECG">
+                                <table id='tbThongTinHanhChanh'>
+                                    <tr style="height:40px;">
+                                        <td style='width:100px'><label>Chuyển đạo mẫu: </label></td>
+                                        <td colspan='5'><span id='ChuyenDaoMau'></span></td>
+                                    </tr>
+                                    <tr  style="height:40px;">
+                                        <td style='width:20%'><label>Nhịp, tần số: </label></td>
+                                        <td><span id='NhipTanSo'></span></td>
+                                        <td> <label>Góc alpha: </label>&nbsp;&nbsp; <span id='Goc'></span></td>
+                                        @*<td> <label>Trục: </label></td>
+                                            <td><span id='Truc'></span></td>*@
+                                    </tr>
+                                    <tr  style="height:40px;">
+                                        <td style='width:23%'> <label>Trục: </label></td>
+                                        <td><span id='Truc'></span></td>
+                                        <td><label>Tư thế tim: </label>&nbsp;&nbsp; <span id='TuTheTim'></span></td>
+                                    </tr>
+                                    <tr  style="height:40px;">
+                                        <td> <label>P: </label></td>
+                                        <td>
+                                            <span id='P'></span>
+                                        </td>
+                                        <td> <label>PQ: </label>&nbsp;&nbsp; <span id='PQ'></span></td>
+                                    </tr>
+                                    <tr  style="height:40px;">
+                                        <td><label>QRS: </label></td>
+                                        <td colspan='5'><span id='QRS'></span></td>
+                                    </tr>
+                                    <tr  style="height:40px;">
+                                        <td><label>ST: </label> </td>
+                                        <td colspan='5'><span id='ST'></span></td>
+                                    </tr>
+                                    <tr  style="height:40px;">
+                                        <td><label>T: </label> </td>
+                                        <td colspan='5'><span id='T'></span></td>
+                                    </tr>
+                                    <tr  style="height:40px;">
+                                        <td><label>QT: </label></td>
+                                        <td colspan='5'><span id='QT'></span></td>
+                                    </tr>
+                                    <tr  style="height:40px;">
+                                        <td><label>Chuyển đạo trước tim: </label> </td>
+                                        <td colspan='5'>
+                                            <span id='ChuyenDaoTruocTim'></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <table>
+                <tr>
+                    <td style="width:10px"></td>
+                    <td style="font-weight:bold; vertical-align:text-top; color:red;">
+                        KẾT LUẬN:
+                    </td>
+                    <td>
+                        <textarea id="ShowKetLuan" rows=1 style="font-weight:bold;display:table-caption;font-size:25px; width:240mm; text-transform:uppercase; font-family: 'Times New Roman';"></textarea>
+                        @*<div id="KetLuan">
+                            </div>*@
+                    </td>
+                </tr>
+
+            </table>
+            <table id="divDeNghi" style="margin-top:3px;">
+                <tr>
+                    <td style="width:10px"></td>
+
+                    <td style="font-weight:bold; vertical-align:text-top;width:110mm;color:red;">
+                        <u> Lời dạn của bác sĩ chuyên khoa:</u>
+                    </td>
+                    <td>
+                        <textarea id="ShowDeNghi" rows="1" style="font-weight:bold;display:table-caption; font-size:25px; width:150mm;font-family: 'Times New Roman';"></textarea>
+                        @* <div id="DeNghi">
+                            </div> *@
+                    </td>
+                </tr>
+            </table>
+
+            <table id="chuky" hidden="hidden" class="footerChuKy">
+                <tr>
+                    <td style="width:50%"></td>
+                    <td style="text-align:center;width:50%">
+                        <span id="TenTinh"></span>, ngày @DateTime.Now.ToString("dd/MM/yyyy HH:mm") <br />
+                        <span class="">BS - KTV </span><span id="Ten" class=""></span><br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <span id="BacSiCDHAChuKy" class=""></span>
+                    </td>
+                </tr>
+
+            </table>
+            <table class="footerChuKy" style="text-align:left; margin-left:15px;">
+                <tr>
+                    <td @*style="margin-top:25px;"*@>*<i>Ghi chú: nhớ mang theo phiếu này khi tái khám.</i></td>
+                </tr>
+            </table>
+        </div>
+        <div id="divHinh" class="divHinhcss">
+            <div style="text-align:center;font-weight:bold;font-size:16px;">
+                HÌNH ẢNH <span id="INPHIEU_XQUANG" name="TenKhoa"></span>
+            </div>
+            <div style="height:10px">
+
+            </div>
+            <div id="hinh" cellspacing="0" cellpadding="0" class="grid-container">
+
+            </div>
+            <div style="height:10px">
+
+            </div>
+            <table>
+                <tr>
+                    <td style="width:50%"></td>
+                    <td style="text-align:center;width:50%;">
+                        <span name="TenTinh"></span>, ngày @DateTime.Now.ToString("dd/MM/yyyy HH:mm")<br />
+                        <span class="">BS, KTV </span><span name="Ten" class=""></span><br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <span name="BacSiCDHAChuKy" class=""></span>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </form>
+</body>
+</html>
+<script src="~/Public/lib/foundation-6.4.2-complete/js/vendor/jquery.js"></script>
+<script src="~/Public/lib/imagesLoaded/imagesLoaded.js"></script>
+<script src="~/Public/lib/JsBarcode/JsBarcode.js"></script>
+<script>
+    $.ajaxSetup({
+        type: "POST",
+        timeout: 10000,
+        dataType: "json",
+        contentType: "application/json",
+        beforeSend: function (xhr, settings) {
+            if (settings.url.indexOf('CanLamSang') === -1)
+                settings.url = '/CanLamSang' + settings.url;
+        }
+    });
+
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.location.href);
+        if (results === null)
+            return "";
+        else
+            return decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    var MaPhieu = getParameterByName('MaPhieu');
+    var AutoPrint = getParameterByName('AutoPrint');
+    $(function () {
+        try {
+            fnGetThongTinBV();
+            fnGetThongTinBN(MaPhieu);
+            JsBarcode("#barcode", MaPhieu, {
+                width: 1,
+                height: 45,
+                fontSize: 12
+            });
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+    });
+
+
+    function fnGetThongTinBV() {
+        $.ajax({
+            url: "/PhieuIn/dbGetThongTinBV",
+            success: function (rs) {
+                var arr_id = Object.keys(rs[0]);
+                $(arr_id).each(function (i, item) {
+                    $('#' + item).text(rs[0][item]);
+                });
+                $(arr_id).each(function (i, item) {
+                    $("span[name=" + item + "]").text(rs[0][item]);
+                });
+            }
+        });
+    }
+
+    // Get Thông tin bệnh nhân in
+    function fnGetThongTinBN(MaPhieu) {
+        var _data = {
+            MaPhieu: MaPhieu
+        };
+        $.ajax({
+            url: "/PhieuIn/dbGetThongTinBenhNhan",
+            data: JSON.stringify(_data),
+            success: function (rs) {
+                var arr_id = Object.keys(rs[0]);
+                //console.log(rs[0].checkDeNghi);
+                //if (rs[0].checkDeNghi == '' || rs[0].checkDeNghi == undefined) {
+                //$('#divDeNghi').attr('hidden','hidden');
+                //}
+                var xoa = '</p>';
+                var check = rs[0].checkDeNghi/*.replace(/<\/p>/g, '.<br\>').replace(/<p>/g,'')*/;
+                $('#ShowDeNghi').html(check).attr('rows', check.split('\n').length);
+
+                var check1 = rs[0].KetLuan/*.replace(/<\/p>/g, '.<br\>').replace(/<p>/g, '')*/;
+                $('#ShowKetLuan').html(check1).attr('rows', check1.split('\n').length);
+                $(arr_id).each(function (i, item) {
+                    $('#' + item).text(rs[0][item]);
+                });
+
+                var htmlcheck = "";
+                switch (rs[0].NhomPhanQuyen) {
+                    case "ECG":
+                        $('#divMoTa').hide();
+                        fnSetCheckedInput(rs[0].MoTa);
+                        break;
+                    default:
+                        $('#divMoTaECG').hide();
+                        htmlcheck += rs[0].MoTa.replace(/font-size:/g, '');
+                        $('div#divMoTa').html(htmlcheck);
+                        break;
+                }
+                //fnsetCheckedCheckbox_VTYT(rs[0].Thuoc, 'Thuoc');
+                //fnsetCheckedCheckbox_VTYT(rs[0].VatTu, 'VTYT');
+                $(arr_id).each(function (i, item) {
+                    $("span[name=" + item + "]").text(rs[0][item]);
+                });
+            },
+            complete: function () {
+                fnGetHinh(MaPhieu, AutoPrint);
+            }
+        });
+    }
+    function fnsetCheckedCheckbox_VTYT(xml, id) {
+        if (xml === '')
+            return;
+        var _root = $.parseXML(xml);
+        var _row = $(_root).find('row');
+        $(_row).each(function (i, item) {
+            var txt = "" + $(item).find('value').text() + " =SL:" + $(item).find('sluong').text();
+            document.getElementById('txt' + id).value = txt;
+        });
+    }
+
+    function fnSetCheckedInput(xml) {
+        if (xml == '')
+            return;
+        var _root = $.parseXML(xml);
+        var _row = $(_root).find('row');
+        $(_row).each(function (i, item) {
+            $("#" + $(item).find('key').text()).text($(item).find('value').text());
+        })
+    }
+    //Get Hình lên phiếu in
+    function fnGetHinh(MaPhieu, AutoPrint) {
+        var _data = {
+            MaPhieu: MaPhieu
+        };
+        $.ajax({
+            url: "/PhieuIn/dbGetHinh",
+            data: JSON.stringify(_data),
+            success: function (rs) {
+                if (rs.length > 0) {
+                    var imgs = "";
+                    switch (rs.length) {
+                        case 1:
+                            var url = rs[0].OnlinePath + "" + rs[0].TenFile;
+                            var imgs = "<div style='font-size:12px;text-align: left;'><img src='" + url + "' style='width: 100%; height:auto;' /><br/><b>Ghi Chú:</b><span>" + rs[0].GhiChu + "</span></div>";
+                            break;
+                        case 2:
+                            $.each(rs, function (i, item) {
+                                i = i++;
+                                imgs += "<div style='font-size:12px;text-align: left;'><img src='" + item.OnlinePath + "" + item.TenFile + "' style='width: 320px; height:auto;' class='item" + i + "' /><br/><b>Ghi Chú:</b><span>" + item.GhiChu + "</span></div>";
+                            });
+                            break;
+                        case 3:
+                            $.each(rs, function (i, item) {
+                                imgs += "<div style='font-size:12px;text-align: left;'><img src='" + item.OnlinePath + "" + item.TenFile + "' style='width: 230px; height:auto;' class='box' /><br/><b>Ghi Chú:</b><span>" + item.GhiChu + "</span></div>";
+                            });
+                            break;
+                        case 4:
+                            $.each(rs, function (i, item) {
+                                imgs += "<div style='font-size:12px;text-align: left;'><img src='" + item.OnlinePath + "" + item.TenFile + "' style='width: 230px; height:auto;' class='box' /><br/><b>Ghi Chú:</b><span>" + item.GhiChu + "</span></div>";
+                            });
+                            break;
+                    }
+                    $('#hinh').html(imgs);
+                    $('#hinh').imagesLoaded(function () {
+                        // images have loaded
+
+                        $('head').append('<style>body{width: 297mm;height: 210mm;}}</style>');
+                        $('head').append('<style>@@page {size: A4 landscape;margin: 0;}</style>');
+                        if (AutoPrint === '1')
+                            parent.loadInPhieu();
+                    });
+                } else {
+                    $("#chuky").prop('hidden', false);
+                    $("#divHinh").hide();
+                    //$('.divThongTincss').css('width', '100%');
+                    //$('.divThongTincss').css('float', 'none');
+                    $("#divMoTa").css('width', '290mm');
+                    $('#divMoTa').css('font-size', '25px');
+                    $('body').css('font-size', '25px');
+                    $('head').append('<style>body{height: 210mm;width: 297mm;} </style>');
+                    $('head').append('<style>@@page {size: A4 portrait;margin: 0;}</style>');
+                    $('head').append('<style>#bordertable{  border-top: #000000 solid 1px;}');//border-bottom: #000000 solid 1px;
+                    if (AutoPrint === '1')
+                        parent.loadInPhieu();
+                }
+            }
+        });
+    }
+
+
+</script>
+
